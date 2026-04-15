@@ -40,7 +40,17 @@ export default function GroupPage() {
                 navigate(`/create-group?groupId=${groupId}`, { replace: true })
                 return
             }
-            setError('Could not load group. Check the ID and ensure backend is running.')
+            
+            const apiError = err?.response?.data?.detail 
+            const status = err?.response?.status
+            if (apiError) {
+                setError(`Error ${status}: ${apiError}`)
+            } else if (err.request) {
+                setError('Network error: Could not reach the server. Please check your connection.')
+            } else {
+                setError(`An unexpected error occurred: ${err.message}`)
+            }
+            
             setLoading(false)
         }
     }, [groupId, navigate])

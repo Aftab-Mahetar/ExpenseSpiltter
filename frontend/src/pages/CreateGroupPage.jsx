@@ -50,7 +50,17 @@ export default function CreateGroupPage() {
 
             navigate(`/group/${groupId}`)
         } catch (err) {
-            setError(err?.response?.data?.detail || 'Failed to create group. Is the backend running?')
+            console.error('Create group error:', err)
+            const apiError = err?.response?.data?.detail 
+            const status = err?.response?.status
+            
+            if (apiError) {
+                setError(`Error ${status}: ${apiError}`)
+            } else if (err.request) {
+                setError('Network error: Could not reach the server. Please check your connection or backend status.')
+            } else {
+                setError(`An unexpected error occurred: ${err.message}`)
+            }
         } finally {
             setLoading(false)
         }
